@@ -10,12 +10,12 @@ function App() {
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
-          <Route exact path="/">
-            <ChakraProvider>
+          <ChakraProvider>
+            <Route exact path="/">
               <MainScreen />
-            </ChakraProvider>
-          </Route>
-          <Route exact path="/" component={Posts} />
+            </Route>
+            <Route path="/posts" component={Posts} />
+          </ChakraProvider>
         </Switch>
       </Suspense>
     </Router>

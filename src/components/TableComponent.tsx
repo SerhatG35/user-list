@@ -14,11 +14,23 @@ import {
   chakra,
   Flex,
   Button,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  useColorModeValue,
   Input,
-  Select,
+  Box,
 } from "@chakra-ui/react";
 import { TableData } from "global";
-import { Column, usePagination, useSortBy, useTable } from "react-table";
+import {
+  Column,
+  useFilters,
+  usePagination,
+  useSortBy,
+  useTable,
+} from "react-table";
 
 type TableComponentProps = {
   columns: Column<TableData>[];
@@ -44,35 +56,49 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     {
       columns,
       data,
-      initialState: { pageSize: 20 },
+      initialState: { pageSize: 5 },
     },
+    useFilters,
     useSortBy,
     usePagination
   );
 
-  const { pageIndex, pageSize } = state;
+  const { pageIndex } = state;
+
+  const color = useColorModeValue("#171923", "#A0AEC0");
+  const bgColor = useColorModeValue("#BEE3F8", "red.500");
 
   return (
     <Flex
       flexDirection="column"
-      justifyContent="center"
+      justifyContent="space-around"
       alignItems="center"
-      border="1px solid black"
+      border="1px solid"
+      borderColor={bgColor}
       borderRadius="10px"
       p="4"
-      height="100%"
+      h="100%"
+      w="50em"
+      fontFamily="Lora"
+      boxShadow="xl"
     >
-      <Table {...getTableProps()} width="60em" height="35em">
+      {/* <Input w="20%" size="sm"></Input> */}
+      <Table {...getTableProps()} h="80%">
         <Thead>
           {headerGroups?.map((headerGroup) => (
             <Tr {...headerGroup?.getHeaderGroupProps()}>
               {headerGroup?.headers?.map((column) => (
                 <Th
                   {...column?.getHeaderProps(column.getSortByToggleProps())}
-                  color="darkred"
+                  color="red.500"
                   px="2"
                   py="0.5"
-                  w="0.1%"
+                  w="3%"
+                  fontFamily="Lora"
+                  fontWeight="600"
+                  fontSize="sm"
+                  fontStyle="italic"
+                  pb="2"
                 >
                   {column?.render("Header")}
                   <chakra.span pl="2">
@@ -97,7 +123,15 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
                 <Tr {...row?.getRowProps()}>
                   {row?.cells?.map((cell) => {
                     return (
-                      <Td {...cell?.getCellProps()} px="2" py="0.5">
+                      <Td
+                        {...cell?.getCellProps()}
+                        px="2"
+                        py="0.5"
+                        border="none"
+                        fontWeight="400"
+                        color={color}
+                        fontSize="sm"
+                      >
                         {cell?.render("Cell")}
                       </Td>
                     );
@@ -111,45 +145,75 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         alignSelf="center"
         justifyContent="space-around"
         alignItems="center"
-        w="60%"
+        w="100%"
+        color={color}
       >
         <chakra.span>
           Page{" "}
           <chakra.strong>
             {pageIndex + 1} of {pageOptions.length}
-          </chakra.strong>{" "}
+          </chakra.strong>
         </chakra.span>
 
-        <chakra.span>
-          Go to page:{" "}
-          <Input
-            variant="filled"
-            size="sm"
-            type="number"
+        <chakra.span display="flex" alignItems="center">
+          Go to page :
+          <NumberInput
             defaultValue={pageIndex + 1}
+            min={1}
+            max={pageOptions.length}
+            size="sm"
+            maxW="16"
+            ml="2"
+            bgColor={bgColor}
             onChange={(e) => {
-              const pageNumber = e.target.value
-                ? Number(e.target.value) - 1
-                : 0;
-              gotoPage(pageNumber);
+              gotoPage(Number(e) - 1);
             }}
-            w="20"
-          ></Input>
+          >
+            <NumberInputField />
+            <NumberInputStepper p="0.1em">
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
         </chakra.span>
 
-        <Button disabled={!canPreviousPage} onClick={() => gotoPage(0)}>
+        <Button
+          bgColor={bgColor}
+          size="sm"
+          disabled={!canPreviousPage}
+          onClick={() => gotoPage(0)}
+          rounded="xl"
+        >
           <ArrowLeftIcon />
         </Button>
 
-        <Button disabled={!canPreviousPage} onClick={() => previousPage()}>
+        <Button
+          bgColor={bgColor}
+          size="sm"
+          disabled={!canPreviousPage}
+          onClick={() => previousPage()}
+          rounded="xl"
+        >
           Previous
         </Button>
 
-        <Button disabled={!canNextPage} onClick={() => nextPage()}>
+        <Button
+          bgColor={bgColor}
+          size="sm"
+          disabled={!canNextPage}
+          onClick={() => nextPage()}
+          rounded="xl"
+        >
           Next
         </Button>
 
-        <Button disabled={!nextPage} onClick={() => gotoPage(pageCount - 1)}>
+        <Button
+          bgColor={bgColor}
+          size="sm"
+          disabled={!canNextPage}
+          onClick={() => gotoPage(pageCount - 1)}
+          rounded="xl"
+        >
           <ArrowRightIcon />
         </Button>
       </Flex>
