@@ -1,65 +1,46 @@
 import { TableData } from "global";
 import { useEffect, useMemo, useState } from "react";
-import { useTable } from "react-table";
-import { COLUMNS } from "src/components/COLUMNS";
 import { getTableData } from "src/utils/DataFetch";
-import { Table, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
+import { COLUMNS } from "src/components/COLUMNS";
+import { Box, Flex } from "@chakra-ui/layout";
+import TableComponent from "src/components/TableComponent";
 
 const MainScreen = () => {
-  const [tableData, setTableData] = useState<TableData[]>();
-  const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => tableData, []);
-
+  const [dataTable, setDataTable] = useState<TableData[]>([]);
   const settingTable = async () => {
-    setTableData(await getTableData());
+    setDataTable(await getTableData());
   };
-
-  const table = useTable({
-    columns: columns,
-    data: data as TableData[],
-  });
+  const columns = useMemo(() => COLUMNS, []);
+  const data = useMemo(() => dataTable, [dataTable]);
 
   useEffect(() => {
     settingTable();
   }, []);
-  useEffect(() => {
-    console.log(tableData);
-  }, [tableData]);
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = table;
 
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderGroupProps()}>
-                {column.render("Header")}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <Box w="100%" h="100vh">
+      <Flex
+        w="100%"
+        h="65%"
+        alignItems="center"
+        justifyContent="center"
+        position="absolute"
+        left="50%"
+        top="50%"
+        transform="translate(-50% ,-50%)"
+      >
+        <TableComponent columns={columns} data={data} />
+        <Flex
+          border="1px solid black"
+          borderRadius="10px"
+          ml="5"
+          h="100%"
+          width="15em"
+        >
+          this will be history
+        </Flex>
+      </Flex>
+    </Box>
   );
 };
 

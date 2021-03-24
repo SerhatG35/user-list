@@ -1,3 +1,4 @@
+import { ChakraProvider } from "@chakra-ui/react";
 import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -9,7 +10,11 @@ function App() {
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
-          <Route exact path="/" component={MainScreen} />
+          <Route exact path="/">
+            <ChakraProvider>
+              <MainScreen />
+            </ChakraProvider>
+          </Route>
           <Route exact path="/" component={Posts} />
         </Switch>
       </Suspense>
