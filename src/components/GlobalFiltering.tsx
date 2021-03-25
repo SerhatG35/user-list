@@ -22,7 +22,7 @@ export const GlobalFiltering = ({
   const color = useColorModeValue("#2F855A", "#DD6B20");
 
   return (
-    <InputGroup marginBottom="1.25em">
+    <InputGroup marginBottom="1em">
       <InputLeftElement
         pointerEvents="none"
         h="100%"

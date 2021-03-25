@@ -20,6 +20,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   useColorModeValue,
+  Center,
 } from "@chakra-ui/react";
 import { TableData } from "global";
 import {
@@ -65,25 +66,26 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
 
   const { pageIndex, globalFilter } = state;
 
-  const color = useColorModeValue("black", "#A0AEC0");
+  const color = useColorModeValue("black", "#fff");
   const bgColor = useColorModeValue("#2F855A", "#DD6B20");
   const colorTh = useColorModeValue("red.500", "#DD6B20");
 
+  // <Editable></Editable>
+
   return (
-    <Flex
+    <Center
       flexDirection="column"
-      justifyContent="space-around"
-      alignItems="center"
       border="1px solid"
       borderColor={bgColor}
       borderRadius="10px"
-      p="4"
+      p="3"
       h="100%"
-      w="60%"
-      fontFamily="Lora"
+      // w="60%"
+      w="55em"
+      fontFamily="Archivo"
       boxShadow="xl"
     >
-      <chakra.span alignSelf="end">
+      <chakra.span alignSelf="end" w="25%">
         <GlobalFiltering filter={globalFilter} setFilter={setGlobalFilter} />
       </chakra.span>
 
@@ -96,10 +98,11 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
                   {...column?.getHeaderProps(column.getSortByToggleProps())}
                   color={colorTh}
                   px="0.75em"
+                  py="0"
                   border="none"
-                  fontFamily="Lora"
+                  fontFamily="Archivo"
                   fontWeight="700"
-                  fontSize="sm"
+                  fontSize="lg"
                   fontStyle="italic"
                   verticalAlign="middle"
                 >
@@ -128,13 +131,14 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
                     return (
                       <Td
                         {...cell?.getCellProps()}
-                        px="0.75em"
-                        py="0"
+                        px="0.5em"
+                        py="0.25em"
                         border="none"
                         fontWeight="500"
                         color={color}
                         fontSize="md"
                         verticalAlign="middle"
+                        wordBreak="break-word"
                       >
                         {cell?.render("Cell")}
                       </Td>
@@ -147,14 +151,14 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       </Table>
       <Flex
         alignSelf="center"
-        justifyContent="space-around"
+        justifyContent="space-evenly"
         alignItems="center"
-        w="100%"
+        w="90%"
         color={color}
       >
         <chakra.span>
           Page{" "}
-          <chakra.strong>
+          <chakra.strong color={bgColor}>
             {pageIndex + 1} of {pageOptions.length}
           </chakra.strong>
         </chakra.span>
@@ -169,6 +173,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
             maxW="16"
             ml="2"
             bgColor={bgColor}
+            allowMouseWheel={true}
             onChange={(e) => {
               gotoPage(Number(e) - 1);
             }}
@@ -186,7 +191,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           size="sm"
           disabled={!canPreviousPage}
           onClick={() => gotoPage(0)}
-          rounded="xl"
+          rounded="lg"
         >
           <ArrowLeftIcon />
         </Button>
@@ -196,7 +201,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           size="sm"
           disabled={!canPreviousPage}
           onClick={() => previousPage()}
-          rounded="xl"
+          rounded="lg"
         >
           Previous
         </Button>
@@ -206,7 +211,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           size="sm"
           disabled={!canNextPage}
           onClick={() => nextPage()}
-          rounded="xl"
+          rounded="lg"
         >
           Next
         </Button>
@@ -216,12 +221,12 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           size="sm"
           disabled={!canNextPage}
           onClick={() => gotoPage(pageCount - 1)}
-          rounded="xl"
+          rounded="lg"
         >
           <ArrowRightIcon />
         </Button>
       </Flex>
-    </Flex>
+    </Center>
   );
 };
 

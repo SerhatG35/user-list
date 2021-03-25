@@ -2,7 +2,7 @@ import { TableData } from "global";
 import { useEffect, useMemo, useState } from "react";
 import { getTableData } from "src/utils/DataFetch";
 import { COLUMNS } from "src/components/COLUMNS";
-import { Box, Flex } from "@chakra-ui/layout";
+import { Center, Flex } from "@chakra-ui/layout";
 import TableComponent from "src/components/TableComponent";
 import { useColorMode, useColorModeValue } from "@chakra-ui/color-mode";
 import { Button } from "@chakra-ui/button";
@@ -24,7 +24,7 @@ const MainScreen = () => {
   }, []);
 
   return (
-    <Box w="100%" h="100vh">
+    <Center w="100%" h="100vh">
       <Button
         size="md"
         onClick={toggleColorMode}
@@ -33,21 +33,14 @@ const MainScreen = () => {
         top="5"
         rounded="2xl"
         bgColor={bgColor}
+        _focus={{
+          boxShadow: "none",
+        }}
       >
         {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
       </Button>
-      <Flex
-        w="100%"
-        h="60%"
-        alignItems="center"
-        justifyContent="center"
-        position="absolute"
-        left="50%"
-        top="50%"
-        transform="translate(-50% ,-50%)"
-      >
+      <Center w="100%" h="65%">
         <TableComponent columns={columns} data={data} />
-
         <Flex
           border="1px solid"
           borderColor={bgColor}
@@ -59,8 +52,8 @@ const MainScreen = () => {
         >
           this will be history
         </Flex>
-      </Flex>
-    </Box>
+      </Center>
+    </Center>
   );
 };
 

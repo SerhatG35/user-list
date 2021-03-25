@@ -24,7 +24,7 @@ export const COLUMNS: Column<TableData>[] = [
     accessor: "status",
   },
   {
-    Header: "Action",
+    Header: "Actions",
     Cell: Action,
   },
 ];
