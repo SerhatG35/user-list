@@ -1,6 +1,6 @@
 import { TableData } from "global";
 import { Column } from "react-table";
-import { ColumnFiltering } from "./ColumnFiltering";
+import Action from "./Action";
 
 export const COLUMNS: Column<TableData>[] = [
   {
@@ -10,7 +10,6 @@ export const COLUMNS: Column<TableData>[] = [
   {
     Header: "Name",
     accessor: "name",
-    Filter: ColumnFiltering,
   },
   {
     Header: "Email",
@@ -26,5 +25,6 @@ export const COLUMNS: Column<TableData>[] = [
   },
   {
     Header: "Action",
+    Cell: Action,
   },
 ];

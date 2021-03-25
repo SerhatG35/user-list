@@ -20,17 +20,16 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   useColorModeValue,
-  Input,
-  Box,
 } from "@chakra-ui/react";
 import { TableData } from "global";
 import {
   Column,
-  useFilters,
+  useGlobalFilter,
   usePagination,
   useSortBy,
   useTable,
 } from "react-table";
+import { GlobalFiltering } from "./GlobalFiltering";
 
 type TableComponentProps = {
   columns: Column<TableData>[];
@@ -51,6 +50,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     gotoPage,
     pageCount,
     state,
+    setGlobalFilter,
     prepareRow,
   } = useTable<TableData>(
     {
@@ -58,15 +58,16 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       data,
       initialState: { pageSize: 5 },
     },
-    useFilters,
+    useGlobalFilter,
     useSortBy,
     usePagination
   );
 
-  const { pageIndex } = state;
+  const { pageIndex, globalFilter } = state;
 
-  const color = useColorModeValue("#171923", "#A0AEC0");
-  const bgColor = useColorModeValue("#BEE3F8", "red.500");
+  const color = useColorModeValue("black", "#A0AEC0");
+  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
+  const colorTh = useColorModeValue("red.500", "#DD6B20");
 
   return (
     <Flex
@@ -78,30 +79,32 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
       borderRadius="10px"
       p="4"
       h="100%"
-      w="50em"
+      w="60%"
       fontFamily="Lora"
       boxShadow="xl"
     >
-      {/* <Input w="20%" size="sm"></Input> */}
-      <Table {...getTableProps()} h="80%">
+      <chakra.span alignSelf="end">
+        <GlobalFiltering filter={globalFilter} setFilter={setGlobalFilter} />
+      </chakra.span>
+
+      <Table {...getTableProps()} h="85%">
         <Thead>
           {headerGroups?.map((headerGroup) => (
             <Tr {...headerGroup?.getHeaderGroupProps()}>
               {headerGroup?.headers?.map((column) => (
                 <Th
                   {...column?.getHeaderProps(column.getSortByToggleProps())}
-                  color="red.500"
-                  px="2"
-                  py="0.5"
-                  w="3%"
+                  color={colorTh}
+                  px="0.75em"
+                  border="none"
                   fontFamily="Lora"
-                  fontWeight="600"
+                  fontWeight="700"
                   fontSize="sm"
                   fontStyle="italic"
-                  pb="2"
+                  verticalAlign="middle"
                 >
                   {column?.render("Header")}
-                  <chakra.span pl="2">
+                  <chakra.span pl="0.5em">
                     {column.isSorted ? (
                       column.isSortedDesc ? (
                         <TriangleDownIcon aria-label="sorted descending" />
@@ -115,7 +118,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()}>
+        <Tbody {...getTableBodyProps()} verticalAlign="top">
           {page &&
             page?.map((row) => {
               prepareRow(row);
@@ -125,12 +128,13 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
                     return (
                       <Td
                         {...cell?.getCellProps()}
-                        px="2"
-                        py="0.5"
+                        px="0.75em"
+                        py="0"
                         border="none"
-                        fontWeight="400"
+                        fontWeight="500"
                         color={color}
-                        fontSize="sm"
+                        fontSize="md"
+                        verticalAlign="middle"
                       >
                         {cell?.render("Cell")}
                       </Td>

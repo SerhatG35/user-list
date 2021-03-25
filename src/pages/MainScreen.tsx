@@ -15,9 +15,9 @@ const MainScreen = () => {
   };
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => dataTable, [dataTable]);
-  const { colorMode, toggleColorMode } = useColorMode();
 
-  const bgColor = useColorModeValue("#BEE3F8", "red.500");
+  const { colorMode, toggleColorMode } = useColorMode();
+  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
 
   useEffect(() => {
     settingTable();
@@ -38,7 +38,7 @@ const MainScreen = () => {
       </Button>
       <Flex
         w="100%"
-        h="70%"
+        h="60%"
         alignItems="center"
         justifyContent="center"
         position="absolute"
@@ -47,7 +47,7 @@ const MainScreen = () => {
         transform="translate(-50% ,-50%)"
       >
         <TableComponent columns={columns} data={data} />
-        
+
         <Flex
           border="1px solid"
           borderColor={bgColor}
