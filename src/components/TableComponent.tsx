@@ -27,9 +27,11 @@ import {
   Column,
   useGlobalFilter,
   usePagination,
+  useRowSelect,
   useSortBy,
   useTable,
 } from "react-table";
+import Action from "./Action";
 import { GlobalFiltering } from "./GlobalFiltering";
 
 type TableComponentProps = {
@@ -61,8 +63,19 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
     },
     useGlobalFilter,
     useSortBy,
-    usePagination
-  );
+    usePagination,
+    useRowSelect,
+    (hooks) => {
+      hooks.visibleColumns.push((columns) => [
+        ...columns,
+        {
+          id: "selection",
+          Header: "Actions",
+          Cell: ({ row }: any) => <Action userID={row.original.id}></Action>,
+        },
+      ]);
+    }
+  );  
 
   const { pageIndex, globalFilter } = state;
 

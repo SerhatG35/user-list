@@ -5,3 +5,9 @@ export type TableData={
     gender:string,
     status:string
 }
+export type UserPosts={
+    id:number,
+    user_id:number,
+    title:string,
+    body:string
+}

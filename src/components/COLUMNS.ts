@@ -1,6 +1,5 @@
 import { TableData } from "global";
 import { Column } from "react-table";
-import Action from "./Action";
 
 export const COLUMNS: Column<TableData>[] = [
   {
@@ -23,8 +22,5 @@ export const COLUMNS: Column<TableData>[] = [
     Header: "Status",
     accessor: "status",
   },
-  {
-    Header: "Actions",
-    Cell: Action,
-  },
+  
 ];
