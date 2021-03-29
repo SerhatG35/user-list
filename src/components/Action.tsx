@@ -2,7 +2,9 @@ import { IconButton } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import { Flex } from "@chakra-ui/layout";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { setUser } from "src/redux/userSlice";
 import { getUserPosts } from "src/utils/DataFetch";
 
 type ActionProps = {
@@ -10,10 +12,13 @@ type ActionProps = {
 };
 
 const Action = ({ userID }: ActionProps) => {
+  const dispatch = useDispatch();
+
   const color = useColorModeValue("#2F855A", "#DD6B20");
 
   const handleUserPosts = async () => {
-    console.log(await getUserPosts(userID));
+    // console.log(await getUserPosts(userID));
+    dispatch(setUser(await getUserPosts(userID)));
   };
 
   return (

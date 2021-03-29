@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { Center } from "@chakra-ui/layout";
 import { useHistory } from "react-router-dom";
-import UserPosts from "../components/UserPosts";
+import UserPostsComponent from "../components/UserPostsComponent";
 
 const Posts = () => {
   let history = useHistory();
@@ -22,7 +22,7 @@ const Posts = () => {
         w="55em"
         boxShadow="xl"
       >
-        <UserPosts />
+        <UserPostsComponent />
       </Center>
       <Button pos="absolute" bottom="10" left="10" onClick={goBackFunction}>
         Back
