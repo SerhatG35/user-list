@@ -11,3 +11,9 @@ export type UserPosts={
     title:string,
     body:string
 }
+export type UserHistory={
+    id:number,
+    name:string,
+    status:string,
+    gender:string
+}

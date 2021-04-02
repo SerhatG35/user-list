@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { UserPosts } from "global";
+import { UserHistory, UserPosts } from "global";
 
-interface CounterState {
+interface userSliceInitial{
   userPosts: UserPosts[] | undefined;
+  history:UserHistory[] | undefined
 }
 
-const initialState: CounterState = {
+const initialState: userSliceInitial = {
   userPosts: undefined,
+  history:[]
 };
 
 export const userSlice = createSlice({
@@ -16,8 +18,12 @@ export const userSlice = createSlice({
     setUser: (state, action) => {
       state.userPosts = action.payload;
     },
+    pushHistory: (state, action) => {
+      state?.history?.push(action.payload);
+    }
   },
 });
 
-export const { setUser } = userSlice.actions;
+
+export const { setUser , pushHistory} = userSlice.actions;
 export default userSlice.reducer;

@@ -14,19 +14,17 @@ const UserPostsComponent = () => {
   const [userPosts, setUserPosts] = useState<UserPosts[] | undefined>(
     undefined
   );
+
   const posts = useSelector((state: RootState) => state?.userPosts?.userPosts);
 
   useEffect(() => {
-    console.log(posts, " posts");
-    if (posts === []) {
-      setUserPosts(undefined);
-    } else {
-      setUserPosts(posts);
-    }
-  }, []);
+    setUserPosts(posts);
+  }, [posts]);
 
   useEffect(() => {
-    console.log(userPosts, " userPosts");
+    if (userPosts?.length === 0) {
+      setUserPosts(undefined);
+    }
   }, [userPosts]);
 
   const bgColor = useColorModeValue("#2F855A", "#DD6B20");
@@ -34,15 +32,21 @@ const UserPostsComponent = () => {
   return (
     <>
       {userPosts ? (
-        <Flex w="100%" h="100%">
+        <Flex
+          w="100%"
+          h="100%"
+          flexWrap="wrap"
+          justify="center"
+          overflowY="auto"
+        >
           {userPosts?.map((post, index) => {
             return (
               <Center
                 d="flex"
                 flexDirection="column"
                 justifyContent="space-between"
-                w="50%"
-                h="50%"
+                w="46%"
+                h="46%"
                 m="1em"
                 padding=".75em"
                 border="1px solid"
@@ -52,16 +56,18 @@ const UserPostsComponent = () => {
                 fontSize=".75em"
                 fontFamily="Archivo"
               >
-                <Heading color={bgColor} as="h1" size="md">
+                <Heading color={bgColor} as="h1" size="md" fontFamily="Archivo">
                   {post?.title}
                 </Heading>
-                <Text fontSize="sm">{post?.body}</Text>
+                <Text noOfLines={10} fontSize="sm">
+                  {post?.body}
+                </Text>
               </Center>
             );
           })}
         </Flex>
       ) : (
-        <h2>Yok</h2>
+        <Heading>POST NOT FOUND</Heading>
       )}
     </>
   );

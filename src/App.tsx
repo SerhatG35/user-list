@@ -9,10 +9,10 @@ const Posts = lazy(() => import("./pages/Posts"));
 
 function App() {
   return (
-    <ChakraProvider>
-      <Router>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Center w="100%" h="100vh">
+    <Router>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ChakraProvider>
+          <Center w="100%" h="100vh" fontFamily="Archivo">
             <Center w="100%" h="65%">
               <ColorModeButton />
               <Switch>
@@ -24,9 +24,9 @@ function App() {
               <HistoryComponent />
             </Center>
           </Center>
-        </Suspense>
-      </Router>
-    </ChakraProvider>
+        </ChakraProvider>
+      </Suspense>
+    </Router>
   );
 }
 

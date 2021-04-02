@@ -20,7 +20,6 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   useColorModeValue,
-  Center,
 } from "@chakra-ui/react";
 import { TableData } from "global";
 import {
@@ -37,9 +36,10 @@ import { GlobalFiltering } from "./GlobalFiltering";
 type TableComponentProps = {
   columns: Column<TableData>[];
   data: TableData[];
+  setDataTable:React.Dispatch<React.SetStateAction<TableData[]>>
 };
 
-const TableComponent = ({ columns, data }: TableComponentProps) => {
+const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -71,11 +71,11 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
         {
           id: "selection",
           Header: "Actions",
-          Cell: ({ row }: any) => <Action userID={row.original.id}></Action>,
+          Cell: ({ row, data }: any) => <Action setDataTable={setDataTable} row={row} data={data} />,
         },
       ]);
     }
-  );  
+  );
 
   const { pageIndex, globalFilter } = state;
 
@@ -83,21 +83,8 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
   const bgColor = useColorModeValue("#2F855A", "#DD6B20");
   const colorTh = useColorModeValue("red.500", "#DD6B20");
 
-  // <Editable></Editable>
-
   return (
-    <Center
-      flexDirection="column"
-      border="1px solid"
-      borderColor={bgColor}
-      borderRadius="10px"
-      p="3"
-      h="100%"
-      // w="60%"
-      w="55em"
-      fontFamily="Archivo"
-      boxShadow="xl"
-    >
+    <>
       <chakra.span alignSelf="end" w="25%">
         <GlobalFiltering filter={globalFilter} setFilter={setGlobalFilter} />
       </chakra.span>
@@ -239,7 +226,7 @@ const TableComponent = ({ columns, data }: TableComponentProps) => {
           <ArrowRightIcon />
         </Button>
       </Flex>
-    </Center>
+    </>
   );
 };
 

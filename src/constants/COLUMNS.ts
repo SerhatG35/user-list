@@ -21,6 +21,5 @@ export const COLUMNS: Column<TableData>[] = [
   {
     Header: "Status",
     accessor: "status",
-  },
-  
+  }
 ];
