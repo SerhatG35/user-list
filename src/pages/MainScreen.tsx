@@ -1,16 +1,27 @@
-import { TableData } from "global";
-import { useEffect, useMemo, useState } from "react";
-import { getTableData } from "src/utils/DataFetch";
-import { COLUMNS } from "src/constants/COLUMNS";
-import TableComponent from "src/components/TableComponent";
 import { Spinner, Center, useColorModeValue } from "@chakra-ui/react";
+
+import { useEffect, useMemo, useState } from "react";
+
+import TableComponent from "src/components/TableComponent";
+import { getTableData } from "src/utils/DataFetch";
+import { useColor } from "src/context/ColorContext";
+
+import { COLUMNS } from "../constants/columns";
+import { Pagination, TableData } from "global";
 
 const MainScreen = () => {
   const [loading, setloading] = useState(false);
   const [dataTable, setDataTable] = useState<TableData[]>([]);
+  const [pagination, setPagination] = useState<Pagination | undefined>(
+    undefined
+  );
+  const { bgColor } = useColor();
+
   const settingTable = async () => {
     setloading(true);
-    setDataTable(await getTableData());
+    let mainData = await getTableData();
+    setDataTable(mainData[0]);
+    setPagination(mainData[1].pagination);
     setloading(false);
   };
   const columns = useMemo(() => COLUMNS, []);
@@ -20,24 +31,31 @@ const MainScreen = () => {
     settingTable();
   }, []);
 
-  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
+  const fontColor = useColorModeValue(bgColor.light, bgColor.dark);
 
   return (
     <Center
       flexDirection="column"
       border="1px solid"
-      borderColor={bgColor}
-      borderRadius="10px"
+      borderColor={fontColor}
+      borderRadius="lg"
       p="3"
       h="100%"
       w="55em"
-      fontFamily="Archivo"
+      fontFamily="Roboto Mono"
       boxShadow="xl"
+      overflowWrap="break-word"
     >
       {loading ? (
-        <Spinner size="lg" thickness="5px" color={bgColor} />
+        <Spinner size="lg" thickness="2px" color={fontColor} />
       ) : (
-        <TableComponent columns={columns} data={data} setDataTable={setDataTable}/>
+        <TableComponent
+          columns={columns}
+          data={data}
+          setDataTable={setDataTable}
+          pagination={pagination}
+          setPagination={setPagination}
+        />
       )}
     </Center>
   );

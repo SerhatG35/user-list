@@ -2,10 +2,6 @@ import { IconButton } from "@chakra-ui/button";
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { DeleteIcon, EditIcon, ViewIcon } from "@chakra-ui/icons";
 import { Flex } from "@chakra-ui/layout";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { pushHistory, setUser } from "src/redux/userSlice";
-import { getUserPosts } from "src/utils/DataFetch";
 import {
   Popover,
   PopoverTrigger,
@@ -14,9 +10,18 @@ import {
   PopoverCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
+
+import { useDispatch } from "react-redux";
+import { setUser } from "src/redux/userSlice";
+
 import { useRef } from "react";
+import { Link } from "react-router-dom";
+
+import { getUserPosts } from "src/utils/DataFetch";
 import { Form } from "./Form";
 import { TableData } from "global";
+import { useColor } from "src/context/ColorContext";
+import { setHistory } from "src/redux/historySlice";
 
 type ActionProps = {
   row: any;
@@ -26,26 +31,21 @@ type ActionProps = {
 
 const Action = ({ row, data, setDataTable }: ActionProps) => {
   const dispatch = useDispatch();
+  const { bgColor } = useColor();
 
   const { onOpen, onClose, isOpen } = useDisclosure();
   const nameRef = useRef<HTMLInputElement>(null);
   const emailRef = useRef<HTMLInputElement>(null);
 
-  const color = useColorModeValue("#2F855A", "#DD6B20");
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
 
   const handleDeleteUser = (userID: number) => {
-    let myData: TableData[] = [];
-    data.forEach((user) => {
-      if (user.id !== userID) {
-        return myData.push(user);
-      }
-    });
-    setDataTable(myData);
+    setDataTable(data.filter((user) => user.id !== userID));
   };
 
   const handleUserPosts = async () => {
     dispatch(setUser(await getUserPosts(row.original.id)));
-    dispatch(pushHistory(row.original));
+    dispatch(setHistory(row.original));
   };
 
   return (
@@ -101,14 +101,14 @@ const Action = ({ row, data, setDataTable }: ActionProps) => {
           </PopoverContent>
         </Popover>
       </>
-      <Link to="/posts">
+      <Link to={`posts/${row.original.id}`}>
         <IconButton
           onClick={() => {
             handleUserPosts();
           }}
           icon={<ViewIcon />}
           ml="0.5em"
-          bgColor={color}
+          bgColor={backgroundColor}
           size="sm"
           aria-label="Get user post"
           _active={{

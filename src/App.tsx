@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ColorModeButton from "./components/ColorModeButton";
 import HistoryComponent from "./components/HistoryComponent";
+import { ColorContextProvider } from "./context/ColorContext";
 
 const MainScreen = lazy(() => import("./pages/MainScreen"));
 const Posts = lazy(() => import("./pages/Posts"));
@@ -12,18 +13,18 @@ function App() {
     <Router>
       <Suspense fallback={<div>Loading...</div>}>
         <ChakraProvider>
-          <Center w="100%" h="100vh" fontFamily="Archivo">
-            <Center w="100%" h="65%">
-              <ColorModeButton />
-              <Switch>
-                <Route exact path="/">
-                  <MainScreen />
-                </Route>
-                <Route path="/posts" component={Posts} />
-              </Switch>
-              <HistoryComponent />
+          <ColorContextProvider>
+            <Center w="100%" h="100vh" fontFamily="Roboto Mono" id="endıs">
+              <Center w="100%" h="65%">
+                <ColorModeButton />
+                <Switch>
+                  <Route exact path="/" component={MainScreen} />
+                  <Route path="/posts/:id" component={Posts} />
+                </Switch>
+                <HistoryComponent />
+              </Center>
             </Center>
-          </Center>
+          </ColorContextProvider>
         </ChakraProvider>
       </Suspense>
     </Router>

@@ -17,3 +17,7 @@ export type UserHistory={
     status:string,
     gender:string
 }
+export type Pagination={
+    pages:number,
+    page:number
+}

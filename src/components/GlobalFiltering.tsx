@@ -1,8 +1,11 @@
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
+
 import { useState } from "react";
 import { useAsyncDebounce } from "react-table";
+
+import { useColor } from "src/context/ColorContext";
 
 type GlobalFilteringProps = {
   filter: any;
@@ -14,12 +17,13 @@ export const GlobalFiltering = ({
   setFilter,
 }: GlobalFilteringProps) => {
   const [value, setValue] = useState(filter);
+  const { bgColor } = useColor();
 
   const onChange = useAsyncDebounce((value) => {
     setFilter(value || undefined);
   }, 500);
 
-  const color = useColorModeValue("#2F855A", "#DD6B20");
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
 
   return (
     <InputGroup marginBottom="1em">
@@ -27,7 +31,7 @@ export const GlobalFiltering = ({
         pointerEvents="none"
         h="100%"
         w="15%"
-        children={<SearchIcon fontSize="sm" color={color} />}
+        children={<SearchIcon fontSize="sm" color={backgroundColor} />}
       />
       <Input
         size="sm"
@@ -37,9 +41,10 @@ export const GlobalFiltering = ({
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        borderColor={color}
+        borderColor={backgroundColor}
         placeholder="Search"
         textAlign="center"
+        borderRadius="lg"
       ></Input>
     </InputGroup>
   );

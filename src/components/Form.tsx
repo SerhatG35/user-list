@@ -1,7 +1,9 @@
 import { ButtonGroup, Button } from "@chakra-ui/button";
 import { Stack, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { TableData } from "global";
+
 import { forwardRef, LegacyRef } from "react";
+
+import { TableData } from "global";
 
 type FormProps = {
   nameRef: React.RefObject<HTMLInputElement>;
@@ -32,20 +34,19 @@ export const Form = ({
   setDataTable,
 }: FormProps) => {
   const saveEdit = () => {
-    let myData: TableData[] = [];
+    let newData: TableData[] = [];
     data.forEach((user) => {
       if (row.original.id === user.id && nameRef?.current?.value) {
-        let currentNameValue: string = nameRef?.current?.value;
-        user.name = currentNameValue;
+        user.name = nameRef?.current?.value;
       }
       if (row.original.email === user.email && emailRef?.current?.value) {
-        let currentEmailValue: string = emailRef?.current?.value;
-        user.email = currentEmailValue;
+        user.email = emailRef?.current?.value;
       }
-      return myData.push(user);
+      return newData.push(user);
     });
-    setDataTable(myData);
+    setDataTable(newData);
   };
+
   return (
     <Stack spacing={4}>
       <TextInput

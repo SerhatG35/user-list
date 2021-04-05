@@ -1,12 +1,15 @@
 import { Button } from "@chakra-ui/button";
-import { useColorMode, useColorModeValue } from "@chakra-ui/color-mode";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { useColorMode, useColorModeValue } from "@chakra-ui/react";
 
-export interface Props {}
+import { useColor } from "src/context/ColorContext";
 
 const ColorModeButton = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
+  const { bgColor } = useColor();
+
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
+
   return (
     <Button
       size="md"
@@ -15,7 +18,7 @@ const ColorModeButton = () => {
       right="5"
       top="5"
       rounded="2xl"
-      bgColor={bgColor}
+      bgColor={backgroundColor}
       _focus={{
         boxShadow: "none",
       }}

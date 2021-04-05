@@ -5,15 +5,20 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { UserPosts } from "global";
+
 import { useEffect, useState } from "react";
+
 import { useSelector } from "react-redux";
 import { RootState } from "src/redux/store";
+
+import { UserPosts } from "global";
+import { useColor } from "src/context/ColorContext";
 
 const UserPostsComponent = () => {
   const [userPosts, setUserPosts] = useState<UserPosts[] | undefined>(
     undefined
   );
+  const { bgColor } = useColor();
 
   const posts = useSelector((state: RootState) => state?.userPosts?.userPosts);
 
@@ -27,7 +32,7 @@ const UserPostsComponent = () => {
     }
   }, [userPosts]);
 
-  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
 
   return (
     <>
@@ -50,16 +55,21 @@ const UserPostsComponent = () => {
                 m="1em"
                 padding=".75em"
                 border="1px solid"
-                borderColor={bgColor}
+                borderColor={backgroundColor}
                 borderRadius="1em"
                 key={index}
                 fontSize=".75em"
-                fontFamily="Archivo"
+                fontFamily="Roboto Mono"
               >
-                <Heading color={bgColor} as="h1" size="md" fontFamily="Archivo">
+                <Heading
+                  color={backgroundColor}
+                  as="h1"
+                  size="sm"
+                  fontFamily="Roboto Mono"
+                >
                   {post?.title}
                 </Heading>
-                <Text noOfLines={10} fontSize="sm">
+                <Text noOfLines={10} fontSize="sm" lineHeight="1.75em">
                   {post?.body}
                 </Text>
               </Center>

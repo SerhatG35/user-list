@@ -1,35 +1,28 @@
 import { useColorModeValue } from "@chakra-ui/color-mode";
 import { Text, Center, Heading, Flex, IconButton } from "@chakra-ui/react";
 import { ViewIcon } from "@chakra-ui/icons";
-import { UserHistory } from "global";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "src/redux/store";
+import { useDispatch } from "react-redux";
 import { setUser } from "src/redux/userSlice";
 import { getUserPosts } from "src/utils/DataFetch";
 import { Link } from "react-router-dom";
+import { useColor } from "src/context/ColorContext";
+import useUserHistory from "../hooks/useUserHistory";
 
 const HistoryComponent = () => {
-  const [userHistory, setUserHistory] = useState<UserHistory[] | undefined>(
-    undefined
-  );
-  const history = useSelector((state: RootState) => state.history.history);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    setUserHistory(history);
-  }, [history]);
+  const { bgColor } = useColor();
+  const userHistory = useUserHistory();
 
   const goUserPosts = async (userID: number) => {
     dispatch(setUser(await getUserPosts(userID)));
   };
 
-  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
 
   return (
     <Flex
       border="1px solid"
-      borderColor={bgColor}
+      borderColor={backgroundColor}
       borderRadius="10px"
       ml="5"
       h="100%"
@@ -37,6 +30,7 @@ const HistoryComponent = () => {
       boxShadow="xl"
       flexDir="column"
       p="0.75em"
+      overflowY="auto"
     >
       {userHistory && (
         <>
@@ -47,20 +41,28 @@ const HistoryComponent = () => {
                 flexDir="column"
                 key={index}
                 w="100%"
-                h="20%"
-                border="2px solid"
+                h="25%"
+                border="1px solid"
                 borderColor={
                   trackedUser?.gender === "Male" ? "blue.500" : "pink.400"
                 }
                 borderRadius="lg"
                 mt="0.5em"
+                p="0.1em"
               >
-                <Heading size="sm" fontFamily="Archivo">
+                <Heading
+                  size="sm"
+                  fontFamily="Roboto Mono"
+                  textAlign="center"
+                  color={
+                    trackedUser?.gender === "Male" ? "blue.500" : "pink.400"
+                  }
+                >
                   {trackedUser?.name}
                 </Heading>
                 <Text>{trackedUser?.status}</Text>
                 <Text>user id : {trackedUser?.id}</Text>
-                <Link to="/posts">
+                <Link to={`/posts/${trackedUser?.id}`}>
                   <IconButton
                     size="sm"
                     bgColor={

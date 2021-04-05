@@ -21,7 +21,7 @@ import {
   NumberDecrementStepper,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { TableData } from "global";
+
 import {
   Column,
   useGlobalFilter,
@@ -30,16 +30,33 @@ import {
   useSortBy,
   useTable,
 } from "react-table";
+
+import { useColor } from "src/context/ColorContext";
 import Action from "./Action";
+
 import { GlobalFiltering } from "./GlobalFiltering";
+import { Pagination, TableData } from "global";
+import { getTablePage } from "src/utils/DataFetch";
+import { useEffect } from "react";
+import { Debounce, DebounceWithParameter } from "src/utils/Debounce";
 
 type TableComponentProps = {
   columns: Column<TableData>[];
   data: TableData[];
-  setDataTable:React.Dispatch<React.SetStateAction<TableData[]>>
+  setDataTable: React.Dispatch<React.SetStateAction<TableData[]>>;
+  pagination: Pagination | undefined;
+  setPagination: React.Dispatch<React.SetStateAction<Pagination | undefined>>;
 };
 
-const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) => {
+const TableComponent = ({
+  columns,
+  data,
+  setDataTable,
+  pagination,
+  setPagination,
+}: TableComponentProps) => {
+  const { bgColor, color, colorTh } = useColor();
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -49,7 +66,6 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
     previousPage,
     canNextPage,
     canPreviousPage,
-    pageOptions,
     gotoPage,
     pageCount,
     state,
@@ -59,7 +75,13 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
     {
       columns,
       data,
-      initialState: { pageSize: 5 },
+      initialState: {
+        pageSize: 20,
+        pageIndex: pagination?.page && pagination?.page - 1,
+      },
+      manualPagination: true,
+      pageCount: pagination?.pages,
+      pageIndex: pagination?.page,
     },
     useGlobalFilter,
     useSortBy,
@@ -71,7 +93,9 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
         {
           id: "selection",
           Header: "Actions",
-          Cell: ({ row, data }: any) => <Action setDataTable={setDataTable} row={row} data={data} />,
+          Cell: ({ row, data }: any) => (
+            <Action setDataTable={setDataTable} row={row} data={data} />
+          ),
         },
       ]);
     }
@@ -79,30 +103,43 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
 
   const { pageIndex, globalFilter } = state;
 
-  const color = useColorModeValue("black", "#fff");
-  const bgColor = useColorModeValue("#2F855A", "#DD6B20");
-  const colorTh = useColorModeValue("red.500", "#DD6B20");
+  const fontColor = useColorModeValue(color.light, color.dark);
+  const backgroundColor = useColorModeValue(bgColor.light, bgColor.dark);
+  const colorTableHead = useColorModeValue(colorTh.light, colorTh.dark);
+
+  const goPageIndex = async () => {
+    let newData = await getTablePage(pageIndex + 1);
+    setPagination(newData[1].pagination);
+    setDataTable(newData[0]);
+  };
+
+  useEffect(() => {
+    goPageIndex();
+  }, [pageIndex]);
 
   return (
     <>
       <chakra.span alignSelf="end" w="25%">
         <GlobalFiltering filter={globalFilter} setFilter={setGlobalFilter} />
       </chakra.span>
-
-      <Table {...getTableProps()} h="85%">
-        <Thead>
+      <Table
+        {...getTableProps()}
+        h="85%"
+        style={{ overflow: "auto", display: "block" }}
+      >
+        <Thead style={{ overflow: "hidden" }}>
           {headerGroups?.map((headerGroup) => (
             <Tr {...headerGroup?.getHeaderGroupProps()}>
               {headerGroup?.headers?.map((column) => (
                 <Th
                   {...column?.getHeaderProps(column.getSortByToggleProps())}
-                  color={colorTh}
+                  color={colorTableHead}
                   px="0.75em"
-                  py="0"
+                  py="0.25em"
                   border="none"
-                  fontFamily="Archivo"
+                  fontFamily="Roboto Mono"
                   fontWeight="700"
-                  fontSize="lg"
+                  fontSize="xl"
                   fontStyle="italic"
                   verticalAlign="middle"
                 >
@@ -121,7 +158,11 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
             </Tr>
           ))}
         </Thead>
-        <Tbody {...getTableBodyProps()} verticalAlign="top">
+        <Tbody
+          {...getTableBodyProps()}
+          verticalAlign="top"
+          style={{ overflowY: "auto", overflowX: "hidden", height: "400px" }}
+        >
           {page &&
             page?.map((row) => {
               prepareRow(row);
@@ -132,10 +173,10 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
                       <Td
                         {...cell?.getCellProps()}
                         px="0.5em"
-                        py="0.25em"
+                        py="1em"
                         border="none"
-                        fontWeight="500"
-                        color={color}
+                        fontWeight="400"
+                        color={fontColor}
                         fontSize="md"
                         verticalAlign="middle"
                         wordBreak="break-word"
@@ -153,30 +194,33 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
         alignSelf="center"
         justifyContent="space-evenly"
         alignItems="center"
-        w="90%"
-        color={color}
+        w="100%"
+        color={fontColor}
+        mt="0.5em"
       >
         <chakra.span>
           Page{" "}
-          <chakra.strong color={bgColor}>
-            {pageIndex + 1} of {pageOptions.length}
+          <chakra.strong color={backgroundColor}>
+            {pageIndex + 1} of {pagination?.pages}
           </chakra.strong>
         </chakra.span>
 
         <chakra.span display="flex" alignItems="center">
           Go to page :
           <NumberInput
-            defaultValue={pageIndex + 1}
+            defaultValue={pagination?.page}
             min={1}
-            max={pageOptions.length}
+            max={pagination?.pages}
             size="sm"
             maxW="16"
             ml="2"
-            bgColor={bgColor}
+            bgColor={backgroundColor}
             allowMouseWheel={true}
-            onChange={(e) => {
-              gotoPage(Number(e) - 1);
-            }}
+            onChange={(e) =>
+              setTimeout(() => {
+                gotoPage(Number(e) - 1);
+              }, 500)
+            }
           >
             <NumberInputField />
             <NumberInputStepper p="0.1em">
@@ -187,40 +231,40 @@ const TableComponent = ({ columns, data, setDataTable }: TableComponentProps) =>
         </chakra.span>
 
         <Button
-          bgColor={bgColor}
+          bgColor={backgroundColor}
           size="sm"
           disabled={!canPreviousPage}
-          onClick={() => gotoPage(0)}
+          onClick={DebounceWithParameter(gotoPage, 400, 0)}
           rounded="lg"
         >
           <ArrowLeftIcon />
         </Button>
 
         <Button
-          bgColor={bgColor}
+          bgColor={backgroundColor}
           size="sm"
           disabled={!canPreviousPage}
-          onClick={() => previousPage()}
+          onClick={Debounce(previousPage, 400)}
           rounded="lg"
         >
           Previous
         </Button>
 
         <Button
-          bgColor={bgColor}
+          bgColor={backgroundColor}
           size="sm"
           disabled={!canNextPage}
-          onClick={() => nextPage()}
+          onClick={Debounce(nextPage, 400)}
           rounded="lg"
         >
           Next
         </Button>
 
         <Button
-          bgColor={bgColor}
+          bgColor={backgroundColor}
           size="sm"
           disabled={!canNextPage}
-          onClick={() => gotoPage(pageCount - 1)}
+          onClick={DebounceWithParameter(gotoPage, 400, pageCount - 1)}
           rounded="lg"
         >
           <ArrowRightIcon />
