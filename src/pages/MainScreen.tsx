@@ -7,7 +7,7 @@ import { getTableData } from "src/utils/DataFetch";
 import { useColor } from "src/context/ColorContext";
 
 import { Pagination, TableData } from "global";
-import { COLUMNS } from "src/constants/columns";
+import { COLUMNS } from "src/constants/ColumnConstant";
 
 const MainScreen = () => {
   const [loading, setloading] = useState(false);
