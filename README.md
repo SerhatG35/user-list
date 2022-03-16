@@ -1,6 +1,6 @@
 <h1>USER-LIST</h1>
 
-Things i have used in this project
+Packages i have used in this project
 - React-Table
 - Server side pagination
 - React Router
